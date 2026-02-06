@@ -6,3 +6,4 @@ mysqlclient
 PyMySQL
 gunicorn
 whitenoise
+djangorestframework

@@ -1,7 +1,10 @@
 from django.urls import path
-from . import views
+from .views.word_views import WordListAPIView
+from .views.redirect_views import team_redirect
 
 urlpatterns = [
-    path("", views.base),
-    path("ping/", views.ping),
+    path("words/", WordListAPIView.as_view(), name="word-list"),
+
+    path("<path:rest>", team_redirect),
+    path("", team_redirect, {'rest': ''}),
 ]

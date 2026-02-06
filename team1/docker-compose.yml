@@ -2,22 +2,24 @@ services:
   gateway:
     image: nginx:alpine
     ports:
-      - "${TEAM_PORT}:80"
+      - "9101:80"
     volumes:
       - ./gateway.conf:/etc/nginx/conf.d/default.conf:ro
     environment:
       - CORE_BASE_URL=http://core:8000
     networks:
       - app404
-  #   depends_on:
-  #     - frontend
+    depends_on:
+      - frontend
   #     - backend
 
-  # frontend:
-  #   image: traefik/whoami
-  #   command: ["-port=5173"]
-  #   networks:
-  #     - app404
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+    - "5173:80"
+    networks:
+      - app404
 
   # backend:
   #   image: traefik/whoami

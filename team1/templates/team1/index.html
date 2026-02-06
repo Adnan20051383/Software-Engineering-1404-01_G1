@@ -1,18 +1,20 @@
 ﻿{% load static %}
+
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>میکروسرویس گروه ۱</title>
-
-  <!-- Team-local shared + team-local page styles -->
+  <title>میکروسرویس گروه 1</title>
+  <!-- Team-local share
+d + team-local page styles -->
   <link rel="stylesheet" href="{% static 'team1/styles/common.css' %}">
   <link rel="stylesheet" href="{% static 'team1/styles/style.css' %}">
 </head>
 
 <body>
   <div class="container">
+    <!-- ثابت برای تمام صفحات: Header + Navbar -->
     <header class="header">
       <div class="header-right">
         <a href="{% url 'microservices' %}" class="home-btn">میکروسرویس‌ها</a>
@@ -46,9 +48,42 @@
       </div>
     </header>
 
-    <main class="welcome-section">
-      <h1 style="font-size: 3rem; color: var(--navy);">به میکروسرویس گروه 1 خوش آمدید</h1>
+    <!-- ثابت برای تب‌ها -->
+    <div class="navbar">
+      <ul class="tabs">
+        <li><a href="{% url '' %}" class="tab-link">جعبه لایتنر</a></li>
+        <li><a href="{% url '' %}" class="tab-link">داشبورد</a></li>
+        <li><a href="{% url '' %}" class="tab-link">کوییز</a></li>
+        <li><a href="{% url '' %}" class="tab-link">بازی</a></li>
+      </ul>
+    </div>
+
+    <!-- Main Content: This will be overridden by child templates -->
+    <main class="main-content">
+      <h2>لیست کلمات</h2>
+      <ul id="words-list">
+        <!-- کلمات اینجا نمایش داده می‌شوند -->
+      </ul>
     </main>
   </div>
 </body>
+<script >
+
+    import { getWords } from '../../wordService.js';
+
+document.addEventListener("DOMContentLoaded", async () => {
+  const wordsContainer = document.getElementById('words-list'); // محل نمایش کلمات
+
+  // فراخوانی تابع برای دریافت کلمات
+  const wordsData = await getWords();
+
+  // اضافه کردن کلمات به HTML
+  const wordsHtml = wordsData.results.map(word => {
+    return `<li>ستیستحینشسیمنسیمکنشس</li>`;
+  }).join("");
+
+  wordsContainer.innerHTML = wordsHtml; // قرار دادن کلمات در HTML
+});
+
+</script>
 </html>

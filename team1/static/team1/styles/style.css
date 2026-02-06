@@ -1,1 +1,37 @@
-﻿/* استایل اختصاصی گروه 1 */
+﻿
+.navbar {
+    position: sticky;
+    top: 0;
+    background-color: var(--white);
+    z-index: 1000;
+    border-bottom: 2px solid var(--light-blue);
+}
+
+.tabs {
+    display: flex;
+    justify-content: space-evenly;
+    padding: 10px;
+    list-style: none;
+}
+
+.tab-link {
+    text-decoration: none;
+    color: var(--navy);
+    padding: 12px 20px;
+    border-radius: 10px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.tab-link:hover {
+    background-color: var(--light-blue);
+    color: var(--white);
+}
+
+/* سایر استایل‌ها */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 0;
+    margin-bottom: 40px;
+}
