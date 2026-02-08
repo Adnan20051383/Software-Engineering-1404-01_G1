@@ -14,6 +14,7 @@ def base(request):
     return render(request, f"{TEAM_NAME}/index.html")
 
 
+@api_login_required
 def team_redirect(request, rest):
     target_url = f"http://localhost:9101/{rest}"
     return redirect(target_url)

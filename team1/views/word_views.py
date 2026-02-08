@@ -1,16 +1,25 @@
+from django.utils.decorators import method_decorator
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.views import APIView
+
+from core.auth import api_login_required
 from ..services.word_service import get_all_words_queryset
 from ..serializers import WordSerializer
 from ..pagination import CustomPagination
 
 
 class WordListAPIView(APIView):
-    def get(self, request):
-        words = get_all_words_queryset()
-        paginator = CustomPagination()
 
-        # Paginate the results
+    @method_decorator(api_login_required)
+    def get(self, request):
+        search_query = request.GET.get('search', '')
+        page = request.GET.get('page', 1)
+
+        words = get_all_words_queryset(search_query)
+
+        paginator = CustomPagination()
         paginated_queryset = paginator.paginate_queryset(words, request)
+
         serializer = WordSerializer(paginated_queryset, many=True)
 
         return paginator.get_paginated_response(serializer.data)
