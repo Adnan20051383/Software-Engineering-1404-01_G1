@@ -1,4 +1,5 @@
-import BASE_URL from "../config";
+import {BASE_URL} from "../config";
+import {getCookie} from "../utils/csrf";
 
 export const quizService = {
   // Create a new Quiz
@@ -8,7 +9,8 @@ export const quizService = {
       body: JSON.stringify({ score, type }),
       headers: {
         "Content-Type": "application/json",
-        "Accept": "application/json"
+        "Accept": "application/json",
+        "X-CSRFToken": getCookie('csrftoken'),
       },
       credentials: "include", // important if you use session / cookies
     });
@@ -53,7 +55,8 @@ export const quizService = {
       body: JSON.stringify({ answers }),
       headers: {
         "Content-Type": "application/json",
-        "Accept": "application/json"
+        "Accept": "application/json",
+        "X-CSRFToken": getCookie('csrftoken'),
       },
       credentials: 'include', // important if you use session / cookies
     });
@@ -67,7 +70,8 @@ export const quizService = {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
-        "Accept": "application/json"
+        "Accept": "application/json",
+        "X-CSRFToken": getCookie('csrftoken'),
       },
       credentials: 'include', // important if you use session / cookies
     });

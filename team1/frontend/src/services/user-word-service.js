@@ -1,5 +1,5 @@
-import BASE_URL from '../config';
-
+import {BASE_URL} from '../config';
+import {getCookie} from "../utils/csrf";
 export const userWordService = {
   // Create a new UserWord
   createUserWord: async (wordId, description, imageUrl = null) => {
@@ -12,7 +12,8 @@ export const userWordService = {
       }),
       headers: {
         'Content-Type': 'application/json',
-        'Accept': 'application/json'
+        'Accept': 'application/json',
+        "X-CSRFToken": getCookie('csrftoken'),
       },
       credentials: 'include', // important if you use session / cookies
     });
@@ -27,7 +28,8 @@ export const userWordService = {
       body: JSON.stringify({ description, image_url: imageUrl, move_to_next_box: moveToNextBox, reset_to_day_1: resetToDay1 }),
       headers: {
         "Content-Type": "application/json",
-        "Accept": "application/json"
+        "Accept": "application/json",
+        "X-CSRFToken": getCookie('csrftoken'),
       },
       credentials: "include", // important if you use session / cookies
     });
@@ -54,7 +56,8 @@ export const userWordService = {
       method: 'DELETE',
       headers: {
         "Content-Type": "application/json",
-        "Accept": "application/json"
+        "Accept": "application/json",
+        "X-CSRFToken": getCookie('csrftoken'),
       },
       credentials: 'include', // important if you use session / cookies
     });
@@ -67,7 +70,8 @@ export const userWordService = {
     const response = await fetch(`${BASE_URL}/userwords/search/?search=${searchTerm}`, {
       headers: {
         "Content-Type": "application/json",
-        "Accept": "application/json"
+        "Accept": "application/json",
+        "X-CSRFToken": getCookie('csrftoken'),
       },
       credentials: 'include', // important if you use session / cookies
     });

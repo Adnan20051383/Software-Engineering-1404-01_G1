@@ -1,4 +1,5 @@
-import BASE_URL from "../config";
+import {BASE_URL} from "../config";
+import {getCookie} from "../utils/csrf";
 
 export const survivalGameService = {
   // Create a new Survival Game
@@ -8,7 +9,8 @@ export const survivalGameService = {
       body: JSON.stringify({ score, lives }),
       headers: {
         "Content-Type": "application/json",
-        "Accept": "application/json"
+        "Accept": "application/json",
+        "X-CSRFToken": getCookie('csrftoken'),
       },
       credentials: 'include', // important if you use session / cookies
     });
@@ -49,7 +51,8 @@ export const survivalGameService = {
       body: JSON.stringify({ score, lives }),
       headers: {
         "Content-Type": "application/json",
-        "Accept": "application/json"
+        "Accept": "application/json",
+        "X-CSRFToken": getCookie('csrftoken'),
       },
       credentials: 'include', // important if you use session / cookies
     });
@@ -77,7 +80,8 @@ export const survivalGameService = {
       body: JSON.stringify({ answers }),
       headers: {
         "Content-Type": "application/json",
-        "Accept": "application/json"
+        "Accept": "application/json",
+        "X-CSRFToken": getCookie('csrftoken'),
       },
       credentials: 'include', // important if you use session / cookies
     });
@@ -91,7 +95,8 @@ export const survivalGameService = {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
-        "Accept": "application/json"
+        "Accept": "application/json",
+        "X-CSRFToken": getCookie('csrftoken'),
       },
       credentials: 'include', // important if you use session / cookies
     });

@@ -1,0 +1,159 @@
+.navbar {
+  background-color: var(--nav-bg);
+  height: 75px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Thin, elegant shadow from Figma */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.nav-container {
+  width: 90%;
+  max-width: 1200px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.nav-links {
+  display: flex;
+  gap: 10px;
+}
+
+.nav-item {
+  text-decoration: none;
+  color: #7f8c8d;
+  padding: 10px 22px;
+  border-radius: 50px; /* Perfect pill shape */
+  font-weight: 500;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Specific Figma Colors */
+.active-leitner {
+  background-color: #ff8c6b; /* Soft Orange */
+  color: white !important;
+}
+
+.active-dashboard {
+  background-color: #70b8ff; /* Soft Blue */
+  color: white !important;
+}
+
+.active-game {
+  background-color: #a29bfe; /* Soft Purple */
+  color: white !important;
+}
+
+.active-quiz {
+  background-color: #55efc4; /* Soft Mint/Green */
+  color: white !important;
+}
+
+.nav-controls {
+  display: flex;
+  gap: 12px;
+}
+
+.control-btn {
+  background: #f8f9fa;
+  border: 1px solid #edf2f7;
+  padding: 8px 14px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 600;
+  color: #4a5568;
+}
+
+/* Ensure Farsi text in buttons looks good */
+[dir='rtl'] .nav-item {
+  font-size: 1rem;
+}
+
+.nav-auth-section {
+  display: flex;
+  align-items: center;
+  min-width: 200px;
+}
+
+/* باکس پروفایل کاربر */
+.user-profile-box {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 5px 12px;
+  border-radius: 50px;
+  border: 1px solid #edf2f7;
+}
+
+.avatar-circle {
+  width: 35px;
+  height: 35px;
+  background: #70b8ff;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.user-name {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-color);
+}
+
+.user-email {
+  font-size: 0.7rem;
+  color: #7f8c8d;
+}
+
+/* دکمه‌های ورود و ثبت‌نام */
+.auth-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.auth-btn {
+  text-decoration: none;
+  font-size: 0.85rem;
+  padding: 6px 16px;
+  border-radius: 50px;
+  font-weight: 500;
+}
+
+.login-btn {
+  color: var(--text-color);
+  border: 1px solid #cbd5e0;
+}
+
+.signup-btn {
+  background: var(--primary);
+  color: var(--text-color);
+}
+
+.logout-mini-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  opacity: 0.6;
+}
+
+.logout-mini-btn:hover { opacity: 1; }

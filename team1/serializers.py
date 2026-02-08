@@ -19,6 +19,7 @@ class WordSerializer(serializers.ModelSerializer):
 
 class UserWordSerializer(serializers.ModelSerializer):
     is_due = serializers.SerializerMethodField()
+    word = WordSerializer()
 
     class Meta:
         model = UserWord

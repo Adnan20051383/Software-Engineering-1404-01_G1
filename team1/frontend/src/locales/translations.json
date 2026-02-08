@@ -1,0 +1,28 @@
+{
+  "fa": {
+    "dashboard": "داشبورد",
+    "leitner": "جعبه لایتنر",
+    "quiz": "کوییز",
+    "game": "بازی",
+    "settings": "تنظیمات",
+    "toggleTheme": "تغییر تم",
+    "welcome": "به داشبورد تیم ۱ خوش آمدید",
+    "login": "ورود",
+    "signup": "ثبت‌نام",
+    "logout": "خروج",
+    "welcome_user": "خوش آمدید،"
+  },
+  "en": {
+    "dashboard": "Dashboard",
+    "leitner": "Leitner Box",
+    "quiz": "Quiz",
+    "game": "Game",
+    "settings": "Settings",
+    "toggleTheme": "Toggle Theme",
+    "welcome": "Welcome to Team 1 Dashboard",
+    "login": "Login",
+    "signup": "Sign Up",
+    "logout": "Logout",
+    "welcome_user": "Welcome,"
+  }
+}
