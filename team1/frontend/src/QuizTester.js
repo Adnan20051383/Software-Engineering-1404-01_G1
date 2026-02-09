@@ -44,11 +44,9 @@ const QuizTester = () => {
                 setResult("correct");
             } else {
                 setResult("wrong");
-                // ذخیره متن پاسخ صحیح که از بک‌انند (تغییر یافته) می‌آید
                 setCorrectAnswerText(res.correct_answer_text);
             }
 
-            // ۲ ثانیه توقف برای اینکه کاربر نتیجه رو ببینه
             setTimeout(() => fetchNextQuestion(quiz.quiz_id), 2000);
         } catch (err) {
             alert("خطا در ثبت پاسخ: " + err.message);

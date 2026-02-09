@@ -17,8 +17,15 @@ class QuizCreateAPIView(APIView):
     @method_decorator(api_login_required)
     def post(self, request):
         user_id = request.user.id
-        score = request.data['score']
         quiz_type = request.data['type']
+        count_user_word = UserWord.objects.filter(user_id=user_id).count()
+        if quiz_type == 1 and count_user_word < 5:
+            return Response({"detail": "You Do Not Enough User Word To Take That Quiz."}, status=status.HTTP_400_BAD_REQUEST)
+        if quiz_type == 2 and count_user_word < 10:
+            return Response({"detail": "You Do Not Enough User Word To Take That Quiz."}, status=status.HTTP_400_BAD_REQUEST)
+        if quiz_type == 3 and count_user_word < 15:
+            return Response({"detail": "You Do Not Enough User Word To Take That Quiz."}, status=status.HTTP_400_BAD_REQUEST)
+        score = request.data['score']
 
         try:
             quiz = create_quiz(user_id, score, quiz_type)
@@ -146,14 +153,14 @@ class QuizAnswerAPIView(APIView):
         correct_id = cache.get(cache_key)
 
         if selected_id is None or correct_id is None:
-            return Response({"detail": "پاسخ یافت نشد یا زمان سوال تمام شده."}, status=400)
+            return Response({"detail": "The answer is not found."}, status=400)
 
         correct_word_text = ""
         try:
             word_obj = Word.objects.get(id=correct_id)
             correct_word_text = word_obj.persian
         except Word.DoesNotExist:
-            correct_word_text = "نامشخص"
+            correct_word_text = "Unknown"
 
         is_correct = int(selected_id) == int(correct_id)
 
@@ -168,7 +175,7 @@ class QuizAnswerAPIView(APIView):
         return Response({
             "is_correct": is_correct,
             "correct_id": correct_id,
-            "correct_answer_text": correct_word_text, # اضافه شد
+            "correct_answer_text": correct_word_text,
             "score": quiz.score,
             "correct_count": quiz.correct_count
         })

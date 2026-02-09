@@ -94,12 +94,21 @@ class UserSurvivalGameRankingAPIView(APIView):
     @method_decorator(api_login_required)
     def get(self, request):
         user_id = request.user.id
-        rank = get_user_survival_game_rank(user_id)
+
+        rank, user_data = get_user_survival_game_rank(user_id)
 
         if rank is None:
-            return Response({"detail": "You are not in the top 5 ranking."}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"detail": "You are not in the top 5 ranking."},
+                status=status.HTTP_404_NOT_FOUND
+            )
 
-        return Response({"rank": rank}, status=status.HTTP_200_OK)
+        response_data = {
+            "rank": rank,
+            **user_data
+        }
+
+        return Response(response_data, status=status.HTTP_200_OK)
 
 
 class SurvivalGameQuestionsAPIView(APIView):
