@@ -34,14 +34,6 @@ class QuizSerializer(serializers.ModelSerializer):
         model = Quiz
         fields = ["quiz_id", "user_id", "type", "date", "score", "correct_count", "question_count", "created_at", "updated_at"]
 
-    def to_representation(self, instance):
-        representation = super().to_representation(instance)
-        if instance.question_count > 0:
-            representation['percentage'] = (instance.correct_count / instance.question_count) * 100
-        else:
-            representation['percentage'] = 0
-        return representation
-
 
 class SurvivalGameSerializer(serializers.ModelSerializer):
     class Meta:

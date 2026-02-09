@@ -129,4 +129,29 @@ export const survivalGameService = {
     if (!response.ok) throw new Error("Network response was not ok");
     return await response.json();
   },
+
+
+  getNextQuestion: async (gameId) => {
+    const response = await fetch(`${BASE_URL}/survival_games/${gameId}/questions/`, {
+      headers: { "Accept": "application/json" },
+      credentials: 'include',
+    });
+    if (!response.ok) throw new Error("Could not fetch question");
+    return await response.json();
+  },
+
+  // Submit only one answer
+  submitSingleAnswer: async (gameId, selectedWordId) => {
+    const response = await fetch(`${BASE_URL}/survival_games/${gameId}/answers/`, {
+      method: "POST",
+      body: JSON.stringify({ selected_word_id: selectedWordId }),
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": getCookie('csrftoken'),
+      },
+      credentials: 'include',
+    });
+    if (!response.ok) throw new Error("Failed to submit answer");
+    return await response.json();
+  },
 };

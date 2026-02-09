@@ -4,21 +4,28 @@ from team1.policies.quiz_policy import can_take_quiz_today, can_take_quiz_weekly
 
 
 def create_quiz(user_id, score, quiz_type):
+    count = 0
     if quiz_type == 1:  # Daily quiz
         if not can_take_quiz_today(user_id):
             raise ValueError("You cannot take the daily quiz yet. Please try again tomorrow.")
+        count = 5
     elif quiz_type == 2:  # Weekly quiz
         if not can_take_quiz_weekly(user_id):
             raise ValueError("You cannot take the weekly quiz yet. Please try again next week.")
+        count = 10
     elif quiz_type == 3:  # Monthly quiz
         if not can_take_quiz_monthly(user_id):
             raise ValueError("You cannot take the monthly quiz yet. Please try again next month.")
+        count = 20
 
     quiz = Quiz.objects.create(
         user_id=user_id,
-        score=score,
+        score=0,
         type=quiz_type,
-        date=timezone.now().date()
+        date=timezone.now().date(),
+        created_at=timezone.now().date(),
+        question_count=count,
+        correct_count=0
     )
     return quiz
 
@@ -43,15 +50,11 @@ def get_user_quizzes(user_id, start_date=None, end_date=None):
     return quizzes
 
 
-def update_quiz(quiz_id, user_id, score=None, quiz_type=None):
+def update_quiz(quiz_id, user_id, score=0, correct_count=0):
     try:
         quiz = Quiz.objects.get(quiz_id=quiz_id, user_id=user_id)
-
-        if score is not None:
-            quiz.score = score
-        if quiz_type is not None:
-            quiz.type = quiz_type
-
+        quiz.score = score
+        quiz.correct_count = correct_count
         quiz.save()
         return quiz
     except Quiz.DoesNotExist:

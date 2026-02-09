@@ -111,3 +111,36 @@ def grade_game_answers(*, game: SurvivalGame, user_id, answers):
     game.save(update_fields=["score", "updated_at"])  # Save the score
 
     return correct_count
+
+
+# team1/services/answer_service.py
+
+def set_active_question(user_id, game_id, word_id):
+    """Stores the currently active question ID for validation."""
+    cache_key = f"active_q:{user_id}:{game_id}"
+    cache.set(cache_key, word_id, timeout=300)  # 5-minute window to answer
+
+
+def get_active_question(user_id, game_id):
+    return cache.get(f"active_q:{user_id}:{game_id}")
+
+
+def validate_and_grade_single_answer(game, user_id, selected_word_id):
+    active_word_id = get_active_question(user_id, game.survival_game_id)
+
+    if not active_word_id:
+        raise ValueError("No active question found or time expired.")
+
+    is_correct = int(selected_word_id) == int(active_word_id)
+
+    if is_correct:
+        game.score += 1
+    else:
+        game.lives -= 1
+
+    game.save(update_fields=["score", "lives", "updated_at"])
+
+    # Clear active question so they can't answer the same one twice
+    cache.delete(f"active_q:{user_id}:{game.survival_game_id}")
+
+    return is_correct, active_word_id
