@@ -1,4 +1,6 @@
 from django.urls import path
+
+
 from .views.dashboard_view import DashboardStatsAPIView
 from .views.games_view import SurvivalGameCreateAPIView, SurvivalGameListAPIView, SurvivalGameDetailAPIView, \
     SurvivalGameQuestionsAPIView, SurvivalGameAnswerAPIView, SurvivalGameDeleteAPIView, TopSurvivalGameRankingAPIView, \
@@ -9,6 +11,9 @@ from .views.user_words_view import UserWordCreateAPIView, UserWordSearchAPIView,
     UserWordDeleteAPIView, UserWordEditAPIView, UserWordGetByIdAPIView
 from .views.word_views import WordListAPIView
 from .views.redirect_views import team_redirect
+from django.conf import settings
+from django.conf.urls.static import static
+
 
 urlpatterns = [
     # =======================      UserWords     =======================
@@ -48,3 +53,5 @@ urlpatterns = [
     path("", team_redirect, {'rest': ''}),
 
 ]
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

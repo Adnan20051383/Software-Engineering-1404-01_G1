@@ -1,0 +1,97 @@
+:root {
+  /* Message (Light) */
+  --msg-bg: #ffffff;
+  --msg-text: #2d3748;
+  --msg-border: rgba(0, 0, 0, 0.08);
+  --msg-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+
+  --msg-info: #3182ce;
+  --msg-success: #38a169;
+  --msg-error: #e53e3e;
+}
+
+.dark-theme, [data-theme='dark'] {
+  /* Message (Dark) */
+  --msg-bg: #2d3748;              /* like your cards */
+  --msg-text: #f7fafc;
+  --msg-border: rgba(255, 255, 255, 0.10);
+  --msg-shadow: 0 14px 40px rgba(0, 0, 0, 0.45);
+
+  --msg-info: #63b3ed;            /* like your accent */
+  --msg-success: #48bb78;
+  --msg-error: #fc8181;
+}
+.msg-center {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: min(420px, calc(100vw - 32px));
+}
+
+.msg {
+  border-radius: 12px;
+  padding: 12px 12px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+
+  background: var(--msg-bg);
+  color: var(--msg-text);
+  border: 1px solid var(--msg-border);
+  box-shadow: var(--msg-shadow);
+
+  backdrop-filter: blur(6px);
+}
+
+.msg-text {
+  font-size: 14px;
+  line-height: 1.35;
+  word-break: break-word;
+}
+
+.msg-x {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
+  padding: 0 4px;
+  color: var(--msg-text);
+  opacity: 0.7;
+}
+
+.msg-x:hover {
+  opacity: 1;
+}
+
+.msg-info {
+  border-left: 6px solid var(--msg-info);
+}
+
+.msg-success {
+  border-left: 6px solid var(--msg-success);
+}
+
+.msg-error {
+  border-left: 6px solid var(--msg-error);
+}
+[dir="rtl"] .msg-center {
+  right: auto;
+  left: 16px;
+}
+
+[dir="rtl"] .msg-info,
+[dir="rtl"] .msg-success,
+[dir="rtl"] .msg-error {
+  border-left: none;
+  border-right: 6px solid currentColor; /* we’ll override below */
+}
+
+[dir="rtl"] .msg-info { border-right-color: var(--msg-info); }
+[dir="rtl"] .msg-success { border-right-color: var(--msg-success); }
+[dir="rtl"] .msg-error { border-right-color: var(--msg-error); }

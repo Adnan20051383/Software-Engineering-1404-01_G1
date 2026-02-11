@@ -9,17 +9,17 @@ from ..pagination import CustomPagination
 
 
 class WordListAPIView(APIView):
-
     @method_decorator(api_login_required)
     def get(self, request):
         search_query = request.GET.get('search', '')
-        page = request.GET.get('page', 1)
+        exact = request.GET.get('exact', 'false').lower() == 'true'
 
-        words = get_all_words_queryset(search_query)
+        words = get_all_words_queryset(search_query, exact=exact)
 
         paginator = CustomPagination()
-        paginated_queryset = paginator.paginate_queryset(words, request)
+        paginator.page_size = 100  # Set page size to 100
 
+        paginated_queryset = paginator.paginate_queryset(words, request)
         serializer = WordSerializer(paginated_queryset, many=True)
 
         return paginator.get_paginated_response(serializer.data)

@@ -388,6 +388,188 @@
     cursor: not-allowed;
 }
 
+/* --- Flashcard 3D Animation --- */
+.flashcard-container {
+    perspective: 1000px;
+    height: 320px;
+    cursor: pointer;
+}
+
+.flashcard-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-style: preserve-3d;
+}
+
+.flashcard-container.flipped .flashcard-inner {
+    transform: rotateY(180deg);
+}
+
+.card-face {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    border-radius: 16px;
+    padding: 22px;
+    border: 1px solid var(--leitner-border);
+    background: var(--leitner-card);
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+
+.card-front {
+    border-top: 5px solid var(--leitner-accent);
+}
+
+.card-back {
+    transform: rotateY(180deg);
+    border-top: 5px solid #38a169; /* Green for the answer side */
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+/* --- Mnemonic Styles --- */
+.mnemonic-section {
+    margin-top: auto;
+    background: var(--leitner-sub);
+    border-radius: 8px;
+    padding: 8px;
+}
+
+.mnemonic-toggle-btn {
+    width: 100%;
+    background: none;
+    border: none;
+    color: var(--leitner-accent);
+    font-weight: 700;
+    font-size: 0.8rem;
+    cursor: pointer;
+    text-transform: uppercase;
+}
+
+.mnemonic-content {
+    margin-top: 8px;
+    border-top: 1px dashed var(--leitner-border);
+    padding-top: 8px;
+}
+
+.desc-display {
+    position: relative;
+    font-size: 0.9rem;
+    font-style: italic;
+    color: var(--leitner-text);
+}
+
+.edit-icon-btn {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 0.8rem;
+}
+
+.mnemonic-content textarea {
+    width: 100%;
+    height: 60px;
+    font-size: 0.85rem;
+    margin-bottom: 5px;
+}
+
+.save-btn {
+    padding: 4px 10px;
+    background: var(--leitner-accent);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    cursor: pointer;
+}
+
+.flip-hint {
+    font-size: 0.65rem;
+    color: #a0aec0;
+    text-align: center;
+    margin-top: 10px;
+}
+
+.flashcard-image-container {
+    width: 100%;
+    height: 120px; /* Fixed height for consistency */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 10px;
+    background-color: #f9f9f9;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.flashcard-img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain; /* Ensures the image scales nicely without cropping */
+}
+
+.flashcard-img-preview {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    display: block;
+    margin: 5px auto;
+    border: 1px dashed #ccc;
+}
+
+.file-input-mini {
+    font-size: 0.8rem;
+    margin-top: 5px;
+    width: 100%;
+}
+
+.flashcard-image-container {
+    width: 100%;
+    height: 120px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid #eee;
+}
+
+.flashcard-img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.file-input-mini {
+    font-size: 0.75rem;
+    margin: 5px 0;
+    width: 100%;
+}
+
+.file-input-main {
+    font-size: 0.85rem;
+    color: #718096;
+}
+
+.edit-mode-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
 /* --- 8. Responsive --- */
 @media (max-width: 950px) {
     .top-layout, .leitner-page[dir="rtl"] .top-layout {
@@ -396,3 +578,4 @@
     .progress-summary { flex-wrap: wrap; }
     .summary-card { flex: 1 1 120px; }
 }
+

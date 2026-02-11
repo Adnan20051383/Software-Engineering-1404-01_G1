@@ -23,7 +23,7 @@ class UserWordSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UserWord
-        fields = ['user_word_id', 'word', 'description', 'image_url', 'leitner_type', 'last_check_date', 'is_due']
+        fields = ['user_word_id', 'word', 'description', 'image', 'leitner_type', 'last_check_date', 'is_due']
 
     def get_is_due(self, obj):
         return is_due(obj)  # Call the function to check if the word is due

@@ -11,55 +11,49 @@ def get_user_words_by_leitner(user_id, leitner_type):
     return UserWord.objects.filter(user_id=user_id, leitner_type=leitner_type)
 
 
-def create_user_word(user_id, word_id, description, image_url=None):
+def create_user_word(user_id, word_id, description, image=None):
     try:
         word = Word.objects.get(id=word_id)
     except Word.DoesNotExist:
         raise ValueError("Word does not exist in the database.")
 
-    # Check if the user already has this word
     if UserWord.objects.filter(user_id=user_id, word=word).exists():
         raise ValueError("This word is already added by the user.")
 
-    # Create UserWord entry with 'new' leitner type by default
     user_word = UserWord.objects.create(
         word=word,
         user_id=user_id,
         description=description,
-        image_url=image_url,
+        image=image,  # Pass the file object here
         leitner_type='new'
     )
     return user_word
 
 
-def edit_user_word(user_word_id, description, image_url=None, move_to_next_box=False, reset_to_day_1=False):
+def edit_user_word(user_word_id, description, image=None, move_to_next_box=False, reset_to_day_1=False):
     try:
         user_word = UserWord.objects.get(user_word_id=user_word_id)
     except UserWord.DoesNotExist:
         raise ValueError("UserWord not found.")
 
-    # 1. Update basic data
     user_word.description = description
-    user_word.image_url = image_url
-    
-    # 2. FORCE the date (timezone.now() is a datetime, .date() makes it a date)
-    user_word.last_check_date = timezone.now().date()
 
-    # 3. Handle Leitner Box Logic
+    # Only update image if a new file is provided
+    if image:
+        user_word.image = image
+
+    if move_to_next_box or reset_to_day_1:
+        user_word.last_check_date = timezone.now().date()
+
     if move_to_next_box:
         user_word.leitner_type = get_next_leitner_box(user_word.leitner_type)
     elif reset_to_day_1:
         user_word.leitner_type = '1day'
-    
-    # 4. Save the changes
-    user_word.save()
-    
-    # 5. CRITICAL: Reload from DB. This converts the high-precision Python 
-    # datetime objects into standard formats that the Serializer won't reject.
-    user_word.refresh_from_db()
-    
-    return user_word
 
+    user_word.save()
+    user_word.refresh_from_db()
+
+    return user_word
 
 def get_next_leitner_box(current_box):
     box_order = ['new', '1day', '3days', '7days', 'mastered']
