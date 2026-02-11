@@ -10,6 +10,7 @@ import CreateUserWord from './components/UserWord/user-word';
 import SurvivalTest from "./SurvivalTest";
 import QuizTester from "./QuizTester";
 import Dashboard from './components/Dashboard/Dashboard';
+import MessageCenter from "./components/MessageCenter/MessageCenter";
 
 function AppContent() {
   const { strings } = useContext(SettingsContext);
@@ -17,6 +18,7 @@ function AppContent() {
   return (
     <Router>
       <Navbar />
+        <MessageCenter />
       <div className="container" style={{ padding: '20px' }}>
         <Routes>
           <Route path="/words" element={<WordList />} />

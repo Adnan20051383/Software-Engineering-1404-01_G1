@@ -1,48 +1,32 @@
 import {BASE_URL} from '../config';
 import {getCookie} from "../utils/csrf";
 
-// 1. Improved Error Handling to tell us EXACTLY what the server says
 const handleResponse = async (response) => {
   if (!response.ok) {
     let errorMessage = `Error ${response.status}: ${response.statusText}`;
-    
-    // 1. Read the body as text ONCE
     const rawBody = await response.text();
-    
     try {
-      // 2. Try to parse it as JSON if possible
       const errorData = JSON.parse(rawBody);
       errorMessage = errorData.detail || JSON.stringify(errorData);
     } catch (e) {
-      // 3. If it's not JSON (like a Django 500 HTML page), search the text
-      if (rawBody.includes("AssertionError")) errorMessage = "Backend Date Error (AssertionError)";
-      else if (response.status === 405) errorMessage = "405: Method Not Allowed";
-      else if (rawBody.includes("FieldError")) errorMessage = "Backend FieldError: Check id vs user_word_id";
-      else errorMessage = `Server Error: ${response.status}`;
+      errorMessage = `Server Error: ${response.status}`;
     }
     throw new Error(errorMessage);
   }
-
   if (response.status === 204) return { success: true };
-  
   const text = await response.text();
   return text ? JSON.parse(text) : { success: true };
 };
 
-
-
 export const userWordService = {
-  // CREATE
-  createUserWord: async (wordId, description, imageUrl = null) => {
+  // CREATE - Now accepts the formData object directly
+  createUserWord: async (formData) => {
     const response = await fetch(`${BASE_URL}/userwords/`, {
       method: 'POST',
-      body: JSON.stringify({ 
-        word_id: wordId, 
-        description, 
-        image_url: imageUrl 
-      }),
+      body: formData, // Send formData directly, NO JSON.stringify
       headers: {
-        'Content-Type': 'application/json',
+        // IMPORTANT: Do NOT set 'Content-Type' here.
+        // The browser will automatically set it to 'multipart/form-data' with the correct boundary.
         'Accept': 'application/json',
         "X-CSRFToken": getCookie('csrftoken'),
       },
@@ -51,18 +35,13 @@ export const userWordService = {
     return await handleResponse(response);
   },
 
-  // UPDATE (Review Logic)
-  updateUserWord: async (userWordId, data) => {
+  // UPDATE - Now accepts the formData object directly
+  updateUserWord: async (userWordId, formData) => {
     const response = await fetch(`${BASE_URL}/userwords/${userWordId}/edit/`, {
       method: "PATCH",
-      body: JSON.stringify({ 
-        description: data.description, 
-        image_url: data.image_url, 
-        move_to_next_box: data.move_to_next_box, 
-        reset_to_day_1: data.reset_to_day_1 
-      }),
+      body: formData, // Send formData directly
       headers: {
-        "Content-Type": "application/json",
+        // IMPORTANT: Do NOT set 'Content-Type' here.
         "Accept": "application/json",
         "X-CSRFToken": getCookie('csrftoken'),
       },
@@ -71,7 +50,7 @@ export const userWordService = {
     return await handleResponse(response);
   },
 
-  // DELETE
+  // DELETE - Stays the same as it doesn't use files
   deleteUserWord: async (userWordId) => {
     const response = await fetch(`${BASE_URL}/userwords/${userWordId}/delete/`, {
       method: 'DELETE',

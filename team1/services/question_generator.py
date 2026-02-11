@@ -1,4 +1,5 @@
 import random
+import re
 from typing import Iterable, List, Dict, Set, Optional
 
 from django.db.models import Min, Max
@@ -17,6 +18,7 @@ def _pick_random_word_excluding(exclude_ids: Set[int]) -> Optional[Word]:
 
     for _ in range(40):
         rid = random.randint(min_id, max_id)
+
         w = (
             Word.objects
             .filter(is_deleted=False, id__gte=rid)
@@ -24,6 +26,7 @@ def _pick_random_word_excluding(exclude_ids: Set[int]) -> Optional[Word]:
             .order_by("id")
             .first()
         )
+
         if not w:
             w = (
                 Word.objects
@@ -32,46 +35,88 @@ def _pick_random_word_excluding(exclude_ids: Set[int]) -> Optional[Word]:
                 .order_by("-id")
                 .first()
             )
+
         if w and w.english and w.persian:
+            if re.search(r'[\u0600-\u06FF]', w.english):
+                continue
+
             return w
+
     return None
 
 
 def _pick_distractors(*, correct_word: Word, exclude_ids: Set[int], k: int = 3) -> List[Word]:
     distractors: List[Word] = []
-    local_exclude = set(exclude_ids)
-    local_exclude.add(correct_word.id)
+    local_exclude_ids = set(exclude_ids)
+    local_exclude_ids.add(correct_word.id)
+
+    seen_texts = set()
+    if correct_word.persian:
+        seen_texts.add(correct_word.persian.strip())
 
     def take_from_queryset(qs, need: int):
-        nonlocal distractors, local_exclude
+        nonlocal distractors, local_exclude_ids, seen_texts
         if need <= 0:
             return 0
-        candidates = list(qs.exclude(id__in=local_exclude).values_list("id", flat=True)[: need * 20])
-        random.shuffle(candidates)
-        picked = []
-        for wid in candidates:
-            if wid not in local_exclude:
-                picked.append(wid)
-                local_exclude.add(wid)
-            if len(picked) >= need:
+
+        candidates_ids = list(qs.exclude(id__in=local_exclude_ids).values_list("id", flat=True)[: need * 50])
+
+        if not candidates_ids:
+            return 0
+
+        random.shuffle(candidates_ids)
+        picked_count = 0
+
+        candidate_objs = list(Word.objects.filter(id__in=candidates_ids[:need * 5]))
+        random.shuffle(candidate_objs)
+
+        for w in candidate_objs:
+            if w.id in local_exclude_ids:
+                continue
+
+            if not w.english or not w.persian:
+                continue
+            if re.search(r'[\u0600-\u06FF]', w.english):
+                continue
+
+            text = w.persian.strip()
+            if text in seen_texts:
+                local_exclude_ids.add(w.id)
+                continue
+
+            distractors.append(w)
+            local_exclude_ids.add(w.id)
+            seen_texts.add(text)
+            picked_count += 1
+
+            if picked_count >= need:
                 break
-        if picked:
-            ws = list(Word.objects.filter(id__in=picked))
-            distractors.extend(ws)
-        return len(picked)
+
+        return picked_count
 
     if correct_word.category_id:
+        needed = k - len(distractors)
         take_from_queryset(
             Word.objects.filter(is_deleted=False, category_id=correct_word.category_id),
-            k - len(distractors)
+            needed
         )
 
-    while len(distractors) < k:
-        w = _pick_random_word_excluding(local_exclude)
+    attempts = 0
+    while len(distractors) < k and attempts < 100:
+        attempts += 1
+        w = _pick_random_word_excluding(local_exclude_ids)
         if not w:
             break
+
+        text = (w.persian or "").strip()
+
+        if text in seen_texts:
+            local_exclude_ids.add(w.id)
+            continue
+
         distractors.append(w)
-        local_exclude.add(w.id)
+        local_exclude_ids.add(w.id)
+        seen_texts.add(text)
 
     return distractors[:k]
 
@@ -80,39 +125,41 @@ def build_mcq_for_word(*, word: Word, exclude_option_texts: Optional[Set[str]] =
     if exclude_option_texts is None:
         exclude_option_texts = set()
 
-    correct = {"word_id": word.id, "text": (word.persian or "").strip()}
+    correct_text = (word.persian or "").strip()
+    correct = {"word_id": word.id, "text": correct_text}
+
     if not correct["text"]:
         raise ValueError("Word has empty persian")
 
+    # اینجا ۳ گزینه غلط را می‌گیریم. خود تابع _pick_distractors تضمین می‌کند
+    # که متن فارسی آن‌ها با `word` و با یکدیگر تکراری نباشد.
     distractors = _pick_distractors(correct_word=word, exclude_ids=set(), k=3)
 
     options = [correct] + [{"word_id": w.id, "text": (w.persian or "").strip()} for w in distractors]
-    options = [o for o in options if o["text"]]
 
-    uniq = {}
-    for o in options:
-        t = o["text"].strip()
-        if t not in uniq and t not in exclude_option_texts:
-            uniq[t] = o
+    # شافل کردن نهایی گزینه‌ها
+    random.shuffle(options)
 
-    options = list(uniq.values())
+    # اگر به هر دلیلی (که الان بعید است) کمتر از ۴ گزینه شد، اینجا پر می‌کنیم
+    # (این بخش به عنوان مکانیزم دفاعی نهایی باقی می‌ماند)
+    uniq_texts = {o["text"] for o in options}
+    excluded_ids_final = {word.id} | {o["word_id"] for o in options if "word_id" in o}
+
     while len(options) < 4:
-        extra = _pick_random_word_excluding({word.id} | {o["word_id"] for o in options if "word_id" in o})
+        extra = _pick_random_word_excluding(excluded_ids_final)
         if not extra:
             break
         t = (extra.persian or "").strip()
-        if t and t not in uniq and t not in exclude_option_texts:
-            o = {"word_id": extra.id, "text": t}
-            uniq[t] = o
-            options.append(o)
 
-    options = options[:4]
-    random.shuffle(options)
+        if t and t not in uniq_texts and t not in exclude_option_texts:
+            options.append({"word_id": extra.id, "text": t})
+            uniq_texts.add(t)
+            excluded_ids_final.add(extra.id)
 
     return {
         "prompt": (word.english or "").strip(),
         "word_id": word.id,
-        "options": options,
+        "options": options[:4],  # مطمئن شویم دقیقاً ۴ تاست
         "answer_word_id": word.id,
     }
 

@@ -1,6 +1,22 @@
 import {BASE_URL} from "../config";
 import {getCookie} from "../utils/csrf";
 
+const readError = async (response) => {
+  let data = null
+  try {
+    data = await response.json()
+  } catch (e) {}
+
+  const msg =
+    data?.detail ||
+    data?.message ||
+    (typeof data === "string" ? data : null) ||
+    `Request failed (${response.status})`
+
+  return new Error(msg)
+}
+
+
 export const quizService = {
   // Create a new Quiz
   createQuiz: async (score, type) => {
@@ -14,7 +30,7 @@ export const quizService = {
       },
       credentials: "include", // important if you use session / cookies
     });
-    if (!response.ok) throw new Error("Network response was not ok");
+    if (!response.ok) throw await readError(response)
     return await response.json();
   },
 
@@ -44,7 +60,7 @@ export const quizService = {
       },
       credentials: 'include', // important if you use session / cookies
     });
-    if (!response.ok) throw new Error("Network response was not ok");
+    if (!response.ok) throw await readError(response)
     return await response.json();
   },
 
@@ -60,12 +76,10 @@ export const quizService = {
       },
       credentials: 'include',
     });
-    if (!response.ok) {
-       const errorData = await response.json();
-       throw new Error(errorData.detail || "Network response was not ok");
-    }
-    return await response.json();
+    if (!response.ok) throw await readError(response)
+    return await response.json()
   },
+
 
   // Delete a quiz by its ID
   deleteQuiz: async (quizId) => {
@@ -78,7 +92,7 @@ export const quizService = {
       },
       credentials: 'include', // important if you use session / cookies
     });
-    if (!response.ok) throw new Error("Network response was not ok");
+    if (!response.ok) throw await readError(response)
     return await response.json();
   },
    // Update quiz score and correct answer count
@@ -93,7 +107,8 @@ export const quizService = {
       },
       credentials: 'include', // important if you use session / cookies
     });
-    if (!response.ok) throw new Error("Network response was not ok");
+    if (!response.ok) throw await readError(response)
     return await response.json();
   },
+
 };

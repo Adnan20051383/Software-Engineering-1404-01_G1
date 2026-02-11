@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext, useRef } from 'react';
 import { quizService } from '../../services/quiz-service';
 import { SettingsContext } from '../../context/SettingsContext';
 import './Quiz.css';
+import {messageService} from "../../services/message-service";
 
 const Quiz = () => {
     const { strings, lang } = useContext(SettingsContext);
@@ -46,67 +47,74 @@ const Quiz = () => {
     };
 
     const handleStartQuiz = async (type) => {
-        setLoading(true);
-        setCorrectCount(0);
-        setFinalScore(0);
-        setProgress(0);
-        try {
-            const newQuiz = await quizService.createQuiz(0, type);
-            setActiveQuiz(newQuiz);
-            await fetchNextQuestion(newQuiz.quiz_id, 0); // Pass current correct count
-            setPhase('active');
-        } catch (err) {
-            alert(err.message);
-        } finally {
-            setLoading(false);
-        }
-    };
+      setLoading(true)
+      setCorrectCount(0)
+      setFinalScore(0)
+      setProgress(0)
 
-    const fetchNextQuestion = async (id, currentCorrects) => {
-        setResult(null);
-        setSelectedId(null);
-        setCorrectAnswerText("");
-        try {
-            const data = await quizService.getQuizQuestions(id, 1);
-            if (data.finished) {
-                // FIX: Calculate score using the most recent count passed through
-                const total = data.total_questions || 5;
-                const scorePercentage = Math.round((currentCorrects / total) * 100);
-                setFinalScore(scorePercentage);
-                setPhase('results');
-            } else {
-                setQuestion(data);
-                setProgress(((data.current_number - 1) / data.total_questions) * 100);
-            }
-        } catch (err) {
-            setPhase('results');
+      try {
+        const newQuiz = await quizService.createQuiz(0, type)
+        setActiveQuiz(newQuiz)
+        setPhase("active")
+        messageService.success(lang === "fa" ? "کوییز شروع شد" : "Quiz started")
+        await fetchNextQuestion(newQuiz.quiz_id, 0)
+      } catch (err) {
+        messageService.error(err?.message || (lang === "fa" ? "خطا" : "Error"))
+      } finally {
+        setLoading(false)
+      }
+    }
+
+   const fetchNextQuestion = async (id, currentCorrects) => {
+      setResult(null)
+      setSelectedId(null)
+      setCorrectAnswerText("")
+
+      try {
+        const data = await quizService.getQuizQuestions(id, 1)
+
+        if (data.finished) {
+          const total = data.total_questions || 5
+          const scorePercentage = Math.round((currentCorrects / total) * 100)
+          setFinalScore(scorePercentage)
+          messageService.info(lang === "fa" ? "کوییز تمام شد" : "Quiz finished")
+          setPhase("results")
+          return
         }
-    };
+
+        setQuestion(data)
+        setProgress(((data.current_number - 1) / data.total_questions) * 100)
+      } catch (err) {
+        messageService.error(err?.message || (lang === "fa" ? "خطا در دریافت سوال" : "Failed to load question"))
+        setPhase("results")
+      }
+    }
+
 
     const handleAnswer = async (wordId) => {
-        if (result) return; 
-        clearInterval(timerRef.current);
-        setSelectedId(wordId); // This triggers the Red/Green CSS colors
+  if (result) return
+  clearInterval(timerRef.current)
+  setSelectedId(wordId)
 
-        try {
-            const res = await quizService.submitAnswers(activeQuiz.quiz_id, wordId);
-            let updatedCount = correctCount;
-            
-            if (res.is_correct) {
-                setResult("correct");
-                updatedCount = correctCount + 1;
-                setCorrectCount(updatedCount);
-            } else {
-                setResult("wrong");
-                setCorrectAnswerText(res.correct_answer_text);
-            }
+  try {
+    const res = await quizService.submitAnswers(activeQuiz.quiz_id, wordId)
+    let updatedCount = correctCount
 
-            // Small delay so user sees their choice color
-            setTimeout(() => fetchNextQuestion(activeQuiz.quiz_id, updatedCount), 1500);
-        } catch (err) {
-            console.error(err);
-        }
-    };
+    if (res.is_correct) {
+      setResult("correct")
+      updatedCount = correctCount + 1
+      setCorrectCount(updatedCount)
+    } else {
+      setResult("wrong")
+      setCorrectAnswerText(res.correct_answer_text)
+    }
+
+    setTimeout(() => fetchNextQuestion(activeQuiz.quiz_id, updatedCount), 1500)
+  } catch (err) {
+    messageService.error(err?.message || (lang === "fa" ? "خطا در ثبت پاسخ" : "Failed to submit answer"))
+  }
+}
+
 
     const handleAutoSubmit = () => {
         if (question?.question?.options?.length > 0) {

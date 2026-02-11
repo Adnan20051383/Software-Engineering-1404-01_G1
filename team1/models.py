@@ -52,11 +52,14 @@ class Word(TimeStampedSoftDeleteModel):
 class UserWord(TimeStampedSoftDeleteModel):
     user_word_id = models.BigAutoField(primary_key=True)
     description = models.TextField()
-    image_url = models.CharField(max_length=255, null=True, blank=True)
+
+    # CHANGED: Use ImageField instead of CharField
+    image = models.ImageField(upload_to='user_words/', null=True, blank=True)
+
     last_check_date = models.DateField(null=True, blank=True)
 
     word = models.ForeignKey(
-        Word, on_delete=models.CASCADE, db_column="word_id", related_name="user_words"
+        'Word', on_delete=models.CASCADE, db_column="word_id", related_name="user_words"
     )
 
     leitner_type = models.CharField(
