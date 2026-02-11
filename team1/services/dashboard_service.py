@@ -34,7 +34,7 @@ def get_user_dashboard_stats(*, user_id):
     recent_quizzes = list(
         Quiz.objects
         .filter(is_deleted=False, user_id=user_id)
-        .order_by("-date", "-created_at")[:4]
+        .order_by("-date", "-created_at")[:15]
         .values("quiz_id", "type", "score", "date", "created_at")
     )
 

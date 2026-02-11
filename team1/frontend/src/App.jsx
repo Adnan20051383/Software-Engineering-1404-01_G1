@@ -9,6 +9,7 @@ import Quiz from './components/Quiz/Quiz';
 import CreateUserWord from './components/UserWord/user-word';
 import SurvivalTest from "./SurvivalTest";
 import QuizTester from "./QuizTester";
+import Dashboard from './components/Dashboard/Dashboard';
 
 function AppContent() {
   const { strings } = useContext(SettingsContext);
@@ -19,10 +20,10 @@ function AppContent() {
       <div className="container" style={{ padding: '20px' }}>
         <Routes>
           <Route path="/words" element={<WordList />} />
-          <Route path="/quiz" element={<QuizTester />} />
+          <Route path="/quiz" element={<Quiz />} />
           <Route path="/game" element={<Game />} />
           <Route path="/userwords" element={<CreateUserWord />} />
-
+          <Route path='/dashboard' element={<Dashboard />} />
           <Route path="/" element={<h1>{strings.welcome}</h1>} />
         </Routes>
       </div>

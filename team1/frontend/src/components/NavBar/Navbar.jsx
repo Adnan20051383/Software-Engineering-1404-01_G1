@@ -64,7 +64,7 @@ const Navbar = () => {
           <NavLink to="/userwords" className={({isActive}) => isActive ? 'nav-item active-leitner' : 'nav-item'}>
             {strings.leitner}
           </NavLink>
-          <NavLink to="/" end className={({isActive}) => isActive ? 'nav-item active-dashboard' : 'nav-item'}>
+          <NavLink to="/dashboard" end className={({isActive}) => isActive ? 'nav-item active-dashboard' : 'nav-item'}>
             {strings.dashboard}
           </NavLink>
           <NavLink to="/game" className={({isActive}) => isActive ? 'nav-item active-game' : 'nav-item'}>
