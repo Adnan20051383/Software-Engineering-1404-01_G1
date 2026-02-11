@@ -20,7 +20,7 @@ function AppContent() {
         <Routes>
           <Route path="/words" element={<WordList />} />
           <Route path="/quiz" element={<QuizTester />} />
-          <Route path="/game" element={<SurvivalTest />} />
+          <Route path="/game" element={<Game />} />
           <Route path="/userwords" element={<CreateUserWord />} />
 
           <Route path="/" element={<h1>{strings.welcome}</h1>} />

@@ -10,7 +10,23 @@
     "login": "ورود",
     "signup": "ثبت‌نام",
     "logout": "خروج",
-    "welcome_user": "خوش آمدید،"
+    "welcome_user": "خوش آمدید،",
+    "box_new": "شروع",
+    "box_1day": "۱ روزه",
+    "box_3days": "۳ روزه",
+    "box_7days": "۷ روزه",
+    "box_mastered": "یادگرفته شده",
+    "search_title": "۱. جستجو در واژه‌نامه",
+    "add_title": "۲. افزودن به لیست",
+    "selected_word": "کلمه انتخاب شده",
+    "mnemonic_label": "یادداشت (اختیاری)",
+    "add_button": "افزودن به مجموعه من",
+    "current_box": "جعبه فعلی",
+    "sync": "بروزرسانی",
+    "forgot": "فراموش کردم",
+    "remembered": "بلدم",
+    "last_check": "آخرین بررسی",
+    "not_due_msg": "زمان مرور نرسیده است."
   },
   "en": {
     "dashboard": "Dashboard",
@@ -23,6 +39,22 @@
     "login": "Login",
     "signup": "Sign Up",
     "logout": "Logout",
-    "welcome_user": "Welcome,"
+    "welcome_user": "Welcome,",
+    "box_new": "Start",
+    "box_1day": "1 Day",
+    "box_3days": "3 Days",
+    "box_7days": "7 Days",
+    "box_mastered": "Mastered",
+    "search_title": "1. Search Dictionary",
+    "add_title": "2. Add to List",
+    "selected_word": "Selected Word",
+    "mnemonic_label": "Mnemonic (Optional)",
+    "add_button": "Add to Collection",
+    "current_box": "Current Box",
+    "sync": "Sync",
+    "forgot": "Forgot",
+    "remembered": "Got it",
+    "last_check": "Last checked",
+    "not_due_msg": "Next review is not due yet."
   }
 }
