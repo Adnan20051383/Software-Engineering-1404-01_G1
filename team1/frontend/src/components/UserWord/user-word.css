@@ -1,0 +1,398 @@
+/* --- 1. Global Reset & Theme Mapping --- */
+:root {
+    /* Default Light Theme Variables (Fallbacks) */
+    --leitner-bg: #fcfcfd;
+    --leitner-text: #2d3748;
+    --leitner-card: #ffffff;
+    --leitner-border: #edf2f7;
+    --leitner-sub: #f8fafc;
+    --leitner-accent: #3182ce;
+    --leitner-accent-soft: #ebf8ff;
+}
+
+/* If your app applies a .dark class to the body or a parent */
+.dark-theme, [data-theme='dark'] {
+    --leitner-bg: #1a202c;
+    --leitner-text: #f7fafc;
+    --leitner-card: #2d3748;
+    --leitner-border: #4a5568;
+    --leitner-sub: #171923;
+    --leitner-accent: #63b3ed;
+    --leitner-accent-soft: rgba(66, 153, 225, 0.15);
+}
+
+.leitner-page {
+    max-width: 1200px;
+    margin: 30px auto;
+    padding: 0 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    font-family: 'Inter', -apple-system, sans-serif;
+    background-color: var(--leitner-bg);
+    color: var(--leitner-text);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* --- 2. Dashboard Scorecards (The Progress Summary) --- */
+.progress-summary {
+    display: flex;
+    gap: 15px;
+    justify-content: space-between;
+}
+
+.summary-card {
+    flex: 1;
+    background: var(--leitner-card);
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+    border: 2px solid var(--leitner-border);
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.summary-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--leitner-accent);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.summary-card.active {
+    border-color: var(--leitner-accent);
+    background: var(--leitner-accent-soft);
+    box-shadow: 0 4px 12px rgba(49, 130, 206, 0.2);
+}
+
+.summary-card span {
+    font-size: 0.7rem;
+    color: #a0aec0;
+    display: block;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 5px;
+}
+
+.summary-card strong {
+    font-size: 1.1rem;
+    color: var(--leitner-text);
+}
+
+/* --- 3. Main Split Layout (Search & Form) --- */
+.top-layout {
+    display: flex;
+    gap: 20px;
+}
+
+/* RTL FLIP: Moves Search to right and Form to left */
+.leitner-page[dir="rtl"] .top-layout {
+    flex-direction: row-reverse;
+}
+
+.section-container {
+    background: var(--leitner-card);
+    border-radius: 16px;
+    padding: 25px;
+    border: 1px solid var(--leitner-border);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.browse-section {
+    flex: 1.6;
+}
+
+.form-section {
+    flex: 1;
+    height: fit-content;
+    position: sticky;
+    top: 20px;
+}
+
+.section-title {
+    font-size: 1.25rem;
+    margin-top: 0;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--leitner-border);
+    color: var(--leitner-text);
+    font-weight: 700;
+}
+
+/* --- 4. Inputs & Search Elements --- */
+.search-bar {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid var(--leitner-border);
+    border-radius: 10px;
+    margin-bottom: 15px;
+    box-sizing: border-box;
+    font-size: 1rem;
+    background: var(--leitner-sub);
+    color: var(--leitner-text);
+    transition: border-color 0.2s;
+}
+
+.search-bar:focus {
+    outline: none;
+    border-color: var(--leitner-accent);
+}
+
+.results-list {
+    height: 350px;
+    overflow-y: auto;
+    background: var(--leitner-sub);
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid var(--leitner-border);
+}
+
+.word-card {
+    background: var(--leitner-card);
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: 0.2s;
+}
+
+.leitner-page[dir="rtl"] .word-card {
+    flex-direction: row-reverse;
+}
+
+.word-card:hover {
+    border-color: var(--leitner-accent);
+    transform: translateX(4px);
+}
+
+.word-card.selected {
+    border-color: var(--leitner-accent);
+    background: var(--leitner-accent-soft);
+}
+
+.en-text {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--leitner-text);
+}
+
+.fa-text {
+    direction: rtl;
+    color: #718096;
+    font-size: 0.95rem;
+}
+
+/* --- 5. Add Word Form Elements --- */
+.form-group {
+    margin-bottom: 18px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: #718096;
+    text-transform: uppercase;
+}
+
+.active-word-display {
+    padding: 12px;
+    background: var(--leitner-sub);
+    border-radius: 8px;
+    font-weight: 700;
+    color: var(--leitner-accent);
+    border: 1px solid var(--leitner-border);
+}
+
+.form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--leitner-border);
+    border-radius: 8px;
+    box-sizing: border-box;
+    font-family: inherit;
+    font-size: 0.95rem;
+    background: var(--leitner-sub);
+    color: var(--leitner-text);
+    height: 100px;
+    resize: vertical;
+}
+
+.submit-btn {
+    width: 100%;
+    padding: 15px;
+    background: #38a169;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-weight: 800;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.submit-btn:hover:not(:disabled) {
+    background: #2f855a;
+}
+
+.submit-btn:disabled {
+    background: #cbd5e0;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+/* --- 6. Study Grid (The Leitner Cards) --- */
+.box-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.leitner-page[dir="rtl"] .box-header {
+    flex-direction: row-reverse;
+}
+
+.current-box-name {
+    text-transform: uppercase;
+    color: var(--leitner-accent);
+    letter-spacing: 1.5px;
+    font-weight: 900;
+    background: var(--leitner-accent-soft);
+    padding: 4px 12px;
+    border-radius: 20px;
+}
+
+.my-words-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.user-word-item {
+    background: var(--leitner-card);
+    border-radius: 16px;
+    padding: 22px;
+    border: 1px solid var(--leitner-border);
+    border-top: 5px solid var(--leitner-accent);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.user-word-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 20px -5px rgba(0,0,0,0.15);
+}
+
+.delete-mini-btn {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: none;
+    border: none;
+    color: #cbd5e0;
+    font-size: 1.4rem;
+    cursor: pointer;
+}
+
+.leitner-page[dir="rtl"] .delete-mini-btn {
+    right: auto;
+    left: 12px;
+}
+
+.due-badge {
+    background: #fed7d7;
+    color: #c53030;
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-size: 0.65rem;
+    font-weight: 700;
+}
+
+.wait-badge {
+    background: var(--leitner-border);
+    color: #718096;
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-size: 0.65rem;
+}
+
+.en-val {
+    margin: 0;
+    font-size: 1.6rem;
+    color: var(--leitner-text);
+}
+
+.fa-val {
+    margin: 0;
+    font-size: 1.15rem;
+    color: #718096;
+    direction: rtl;
+}
+
+/* Lock Explanation Area */
+.lock-explanation {
+    background: var(--leitner-sub);
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid var(--leitner-border);
+    font-size: 0.85rem;
+}
+
+.status-text { margin: 0; color: #a0aec0; }
+.reason-text { margin: 4px 0 0; color: var(--leitner-accent); font-weight: 600; }
+
+/* --- 7. Review Action Buttons --- */
+.review-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: auto;
+}
+
+.btn-forgot, .btn-remember {
+    flex: 1;
+    padding: 12px;
+    border-radius: 10px;
+    font-weight: 700;
+    cursor: pointer;
+    border: 1.5px solid transparent;
+    transition: all 0.2s;
+}
+
+.btn-forgot {
+    background: #fff5f5;
+    color: #c53030;
+    border-color: #feb2b2;
+}
+
+.btn-remember {
+    background: #f0fff4;
+    color: #2f855a;
+    border-color: #9ae6b4;
+}
+
+.btn-forgot:disabled, .btn-remember:disabled {
+    opacity: 0.3;
+    filter: grayscale(1);
+    cursor: not-allowed;
+}
+
+/* --- 8. Responsive --- */
+@media (max-width: 950px) {
+    .top-layout, .leitner-page[dir="rtl"] .top-layout {
+        flex-direction: column;
+    }
+    .progress-summary { flex-wrap: wrap; }
+    .summary-card { flex: 1 1 120px; }
+}

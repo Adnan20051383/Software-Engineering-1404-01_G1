@@ -34,23 +34,30 @@ def create_user_word(user_id, word_id, description, image_url=None):
 
 def edit_user_word(user_word_id, description, image_url=None, move_to_next_box=False, reset_to_day_1=False):
     try:
-        user_word = UserWord.objects.get(id=user_word_id)
+        user_word = UserWord.objects.get(user_word_id=user_word_id)
     except UserWord.DoesNotExist:
         raise ValueError("UserWord not found.")
 
-    # Update description and image_url
+    # 1. Update basic data
     user_word.description = description
     user_word.image_url = image_url
-    user_word.last_check_date = timezone.now()
-    user_word.save()
+    
+    # 2. FORCE the date (timezone.now() is a datetime, .date() makes it a date)
+    user_word.last_check_date = timezone.now().date()
 
-    # Move to next box or reset to 1-day box based on user's choice
+    # 3. Handle Leitner Box Logic
     if move_to_next_box:
         user_word.leitner_type = get_next_leitner_box(user_word.leitner_type)
     elif reset_to_day_1:
         user_word.leitner_type = '1day'
+    
+    # 4. Save the changes
     user_word.save()
-
+    
+    # 5. CRITICAL: Reload from DB. This converts the high-precision Python 
+    # datetime objects into standard formats that the Serializer won't reject.
+    user_word.refresh_from_db()
+    
     return user_word
 
 
@@ -71,7 +78,7 @@ def get_user_word_by_id(user_word_id, user_id):
 
 def delete_user_word(user_word_id):
     try:
-        user_word = UserWord.objects.get(id=user_word_id)
+        user_word = UserWord.objects.get(user_word_id=user_word_id)
         user_word.delete()
     except UserWord.DoesNotExist:
         raise ValueError("UserWord not found.")
