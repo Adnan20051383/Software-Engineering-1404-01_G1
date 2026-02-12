@@ -1,74 +1,370 @@
-.game-container {
-    max-width: 500px;
-    margin: 40px auto;
-    padding: 20px;
-    text-align: center;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: var(--bg-color, #ffffff);
-    border-radius: 15px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+:root {
+    /* Light Theme - Clean & Airy */
+    --g-bg: #f1f5f9;
+    --g-card: rgba(255, 255, 255, 0.9);
+    --g-text: #0f172a;
+    --g-sub: #64748b;
+    --g-accent: #2563eb;
+    --g-accent-soft: rgba(37, 99, 235, 0.08);
+    --g-danger: #ef4444;
+    --g-success: #10b981;
+    --g-border: #e2e8f0;
+    --g-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
 }
 
-.stats-bar {
+/* DEEP DARK THEME - Stylish Midnight Glass */
+.dark-mode-active {
+    --g-bg: #030712;        /* Deep Space Black */
+    --g-card: #111827;      /* Rich Navy Slate */
+    --g-text: #f9fafb;      /* Pure White */
+    --g-sub: #9ca3af;
+    --g-border: #1f2937;
+    --g-accent: #3b82f6;
+    --g-accent-soft: rgba(59, 130, 246, 0.12);
+    --g-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+}
+
+/* --- Layout Provider --- */
+.survival-master-container {
+    min-height: 100vh;
+    width: 100%;
+    background-color: var(--g-bg);
+    color: var(--g-text);
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    font-family: 'Inter', 'Vazir', sans-serif;
+    padding: 30px 0;
     display: flex;
-    justify-content: space-around;
-    margin-bottom: 30px;
-    font-size: 1.2rem;
-    font-weight: bold;
+    justify-content: center;
 }
 
-.stat span {
-    color: #2a9d8f;
+.quiz-wrapper, .game-inner-wrapper {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
 }
 
-.question-card h2 {
+/* --- Shared Card Styles (Glassmorphism) --- */
+.hero-card,
+.question-card-main, 
+.active-game-layout,
+.quiz-result-card, 
+.ranking-container {
+    background: var(--g-card);
+    border: 1px solid var(--g-border);
+    border-radius: 32px;
+    padding: 40px;
+    box-shadow: var(--g-shadow);
     margin-bottom: 25px;
-    color: #333;
+    text-align: center;
+    position: relative;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.options-grid {
+/* --- Stats Bar / HUD UI --- */
+.game-header-ui, .game-hud {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--g-card);
+    padding: 15px 25px;
+    border-radius: 24px;
+    border: 1px solid var(--g-border);
+    margin-bottom: 30px;
+    box-shadow: var(--g-shadow);
+}
+
+.ui-pill {
+    background: var(--g-accent-soft);
+    padding: 10px 18px;
+    border-radius: 16px;
+    border: 1px solid var(--g-accent);
+    display: flex;
+    align-items: center;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.ui-pill .label, .hud-item small {
+    font-size: 0.7rem;
+    font-weight: 800;
+    color: var(--g-accent);
+    margin-inline-end: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.ui-pill .value, .hud-item span {
+    font-size: 1.25rem;
+    font-weight: 900;
+    font-variant-numeric: tabular-nums;
+}
+
+/* --- Lives / Hearts Display --- */
+.lives-display, .hearts {
+    display: flex;
+    gap: 8px;
+}
+
+.heart-unit, .heart {
+    font-size: 1.6rem;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    filter: grayscale(1) brightness(0.5);
+    opacity: 0.3;
+}
+
+.heart-unit.full, .heart.active {
+    filter: none;
+    opacity: 1;
+    animation: heartBeat 2s infinite ease-in-out;
+    transform: scale(1.1);
+    text-shadow: 0 0 15px rgba(239, 68, 68, 0.4);
+}
+
+/* --- Navigation & Timer --- */
+.nav-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.timer-circle, .timer-display {
+    width: 85px;
+    height: 85px;
+    border: 5px solid var(--g-accent);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    font-size: 1.8rem;
+    background: var(--g-card);
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+.timer-circle.critical, .time-val.warn {
+    border-color: var(--g-danger);
+    color: var(--g-danger);
+    animation: pulseDanger 0.6s infinite alternate;
+}
+
+/* --- Active Question UI --- */
+.game-prompt, .word-prompt {
+    font-size: 4rem;
+    margin-bottom: 45px;
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    background: linear-gradient(to bottom, var(--g-text) 60%, var(--g-accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.loading-q-spinner {
+    padding: 60px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    color: var(--g-accent);
+    text-transform: uppercase;
+    animation: pulse 1.5s infinite;
+}
+
+/* Options Grid */
+.game-options-grid, .options-stack {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 15px;
+    gap: 18px;
 }
 
-.option-btn {
-    padding: 15px;
-    border: 2px solid #e0e0e0;
-    border-radius: 8px;
-    background: white;
+.game-opt-btn, .opt-btn {
+    padding: 24px;
+    background: var(--g-accent-soft);
+    border: 1px solid var(--g-border);
+    border-radius: 20px;
+    color: var(--g-text);
+    font-weight: 700;
+    font-size: 1.2rem;
     cursor: pointer;
-    font-size: 1rem;
-    transition: all 0.2s ease;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.option-btn:hover:not(:disabled) {
-    border-color: #2a9d8f;
-    background: #f0fdfa;
+.game-opt-btn:hover:not(:disabled), .opt-btn:hover:not(:disabled) {
+    border-color: var(--g-accent);
+    transform: translateY(-5px);
+    background: var(--g-card);
+    box-shadow: 0 12px 20px -10px rgba(0,0,0,0.2);
 }
 
-.option-btn.correct {
-    background-color: #d4edda !important;
-    border-color: #28a745 !important;
-    color: #155724;
+.game-opt-btn.correct, .opt-btn.correct, .opt-btn.is-correct {
+    background: linear-gradient(135deg, #059669, var(--g-success)) !important;
+    border-color: transparent !important;
+    color: white !important;
+    box-shadow: 0 10px 25px rgba(16, 185, 129, 0.4);
 }
 
-.option-btn.wrong {
-    background-color: #f8d7da !important;
-    border-color: #dc3545 !important;
-    color: #721c24;
+.game-opt-btn.wrong, .opt-btn.wrong {
+    background: linear-gradient(135deg, #dc2626, var(--g-danger)) !important;
+    border-color: transparent !important;
+    color: white !important;
+    animation: shakeUI 0.4s;
+    box-shadow: 0 10px 25px rgba(239, 68, 68, 0.4);
 }
 
-.start-btn {
-    padding: 12px 30px;
-    font-size: 1.1rem;
-    background-color: #2a9d8f;
+/* --- Start Screen & Exit Buttons --- */
+.survival-badge {
+    background: var(--g-danger);
     color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+    padding: 6px 14px;
+    border-radius: 10px;
+    font-size: 0.7rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    display: inline-block;
+    margin-bottom: 20px;
 }
 
-.game-over-screen h1 {
-    color: #e76f51;
+.game-title {
+    font-size: 3.2rem;
+    font-weight: 950;
+    margin-bottom: 20px;
+    letter-spacing: -0.02em;
+}
+
+.game-desc {
+    color: var(--g-sub);
+    margin-bottom: 35px;
+    line-height: 1.6;
+    font-size: 1.1rem;
+}
+
+.start-game-btn, .btn-primary-play {
+    width: 100%;
+    background: linear-gradient(135deg, var(--g-accent), #1e40af);
+    color: white;
+    padding: 20px 40px;
+    border-radius: 24px;
+    border: none;
+    font-size: 1.4rem;
+    font-weight: 900;
+    cursor: pointer;
+    box-shadow: 0 15px 30px -10px rgba(37, 99, 235, 0.5);
+    transition: all 0.3s;
+}
+
+.start-game-btn:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 20px 40px -12px rgba(37, 99, 235, 0.6);
+}
+
+.btn-exit-menu {
+    background: transparent;
+    color: var(--g-sub);
+    border: 1px solid var(--g-border);
+    padding: 16px;
+    border-radius: 20px;
+    font-weight: 700;
+    margin-top: 15px;
+}
+
+/* --- Leaderboard / Ranking Elite Styles --- */
+.ranking-container {
+    margin-top: 40px;
+    padding: 30px;
+    background: var(--g-card);
+}
+
+.rank-title {
+    font-size: 1.6rem;
+    font-weight: 900;
+    color: var(--g-text);
+    margin-bottom: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.rank-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.rank-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    background: var(--g-accent-soft);
+    border-radius: 18px;
+    border: 1px solid transparent;
+    transition: all 0.3s;
+}
+
+.rank-item.top-player {
+    background: linear-gradient(90deg, rgba(245, 158, 11, 0.1), rgba(245, 158, 11, 0.05));
+    border-color: rgba(245, 158, 11, 0.3);
+    transform: scale(1.02);
+}
+
+.rank-item.top-player .rank-pos {
+    color: #f59e0b;
+    font-size: 1.4rem;
+}
+
+.rank-item:hover {
+    background: var(--g-card);
+    border-color: var(--g-accent);
+}
+
+.rank-pos { color: var(--g-accent); font-weight: 900; width: 45px; font-size: 1.1rem; }
+.rank-user { flex: 1; font-weight: 700; margin-inline: 15px; text-align: start; }
+.rank-pts { font-weight: 900; color: var(--g-danger); font-size: 1.2rem; }
+
+/* --- Game Over States --- */
+.skull-icon { font-size: 5.5rem; margin-bottom: 10px; filter: drop-shadow(0 0 20px rgba(239, 68, 68, 0.2)); }
+.score-box { 
+    margin: 30px 0; 
+    padding: 25px; 
+    background: var(--g-accent-soft); 
+    border-radius: 24px;
+    border: 1px solid var(--g-border);
+}
+.score-box span { font-size: 0.9rem; letter-spacing: 0.1em; color: var(--g-sub); }
+.score-box strong { font-size: 5rem; color: var(--g-text); display: block; line-height: 1; }
+
+/* --- Animations --- */
+@keyframes heartBeat {
+    0% { transform: scale(1); }
+    10% { transform: scale(1.25); }
+    20% { transform: scale(1); }
+}
+
+@keyframes pulseDanger {
+    from { transform: scale(1); border-color: var(--g-danger); }
+    to { transform: scale(1.05); border-color: #fca5a5; box-shadow: 0 0 25px rgba(239, 68, 68, 0.5); }
+}
+
+@keyframes shakeUI {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-8px); }
+    40%, 80% { transform: translateX(8px); }
+}
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(30px) scale(0.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* --- Responsive Layout --- */
+@media (max-width: 600px) {
+    .game-options-grid { grid-template-columns: 1fr; }
+    .word-prompt { font-size: 3rem; }
+    .game-title { font-size: 2.4rem; }
+    .hero-card { padding: 30px 20px; border-radius: 0; }
 }
