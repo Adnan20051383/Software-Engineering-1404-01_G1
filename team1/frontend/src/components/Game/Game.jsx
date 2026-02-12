@@ -24,10 +24,14 @@ const Game = () => {
     const timerRef = useRef(null);
 
     // Load Rankings on mount
-    useEffect(() => {
+    const fetchRankings = () => {
         survivalGameService.getTopSurvivalGameRanking()
             .then(data => setRankings(data || []))
             .catch(err => console.error("Leaderboard error:", err));
+    };
+
+    useEffect(() => {
+        fetchRankings();
     }, []);
 
     // Timer Logic
@@ -46,7 +50,16 @@ const Game = () => {
         return () => clearInterval(timerRef.current);
     }, [currentQuestion, feedback, gameOver, game]);
 
-    // This handles both the first start and the "Try Again"
+    // Handle Exit / Abort - Resets state to show the Start Screen
+    const handleExit = () => {
+        setGame(null);
+        setGameOver(false);
+        setCurrentQuestion(null);
+        setFeedback(null);
+        setSelectedId(null);
+        fetchRankings(); // Refresh rankings when returning to start screen
+    };
+
     const startGame = async () => {
         // --- HARD RESET ---
         setGameOver(false);
@@ -109,7 +122,7 @@ const Game = () => {
         <div className={`survival-master-container ${themeClass}`} dir={lang === 'fa' ? 'rtl' : 'ltr'}>
             <div className="game-inner-wrapper">
                 
-                {/* 1. START SCREEN & RANKINGS (Only show if NO game is active AND not in Game Over) */}
+                {/* 1. START SCREEN & RANKINGS */}
                 {!game && !gameOver && (
                     <div className="start-screen-container">
                         <div className="hero-card">
@@ -120,7 +133,6 @@ const Game = () => {
                             </button>
                         </div>
 
-                        {/* RANKINGS SECTION */}
                         <div className="ranking-container">
                             <h3 className="rank-title">🏆 {lang === 'fa' ? 'برترین‌ها' : 'Leaderboard'}</h3>
                             <div className="rank-list">
@@ -149,7 +161,7 @@ const Game = () => {
                             <button className="start-game-btn" onClick={startGame}>
                                 {lang === 'fa' ? 'تلاش مجدد' : 'Try Again'}
                             </button>
-                            <button className="btn-exit-menu" onClick={() => navigate('/dashboard')}>
+                            <button className="btn-exit-menu" onClick={handleExit}>
                                 {lang === 'fa' ? 'خروج' : 'Exit'}
                             </button>
                         </div>
@@ -187,7 +199,7 @@ const Game = () => {
                         </div>
                         
                         <div className="game-footer">
-                            <button className="btn-exit-menu" onClick={() => navigate('/dashboard')}>
+                            <button className="btn-exit-menu" onClick={handleExit}>
                                 {lang === 'fa' ? 'انصراف' : 'Abort'}
                             </button>
                         </div>
