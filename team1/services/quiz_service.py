@@ -16,7 +16,7 @@ def create_quiz(user_id, score, quiz_type):
     elif quiz_type == 3:  # Monthly quiz
         if not can_take_quiz_monthly(user_id):
             raise ValueError("You cannot take the monthly quiz yet. Please try again next month.")
-        count = 20
+        count = 15
 
     quiz = Quiz.objects.create(
         user_id=user_id,

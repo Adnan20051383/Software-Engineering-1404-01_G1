@@ -21,12 +21,10 @@ function AppContent() {
         <MessageCenter />
       <div className="container" style={{ padding: '20px' }}>
         <Routes>
-          <Route path="/words" element={<WordList />} />
           <Route path="/quiz" element={<Quiz />} />
           <Route path="/game" element={<Game />} />
           <Route path="/userwords" element={<CreateUserWord />} />
-          <Route path='/dashboard' element={<Dashboard />} />
-          <Route path="/" element={<h1>{strings.welcome}</h1>} />
+          <Route path="/" element={<Dashboard />} />
         </Routes>
       </div>
     </Router>
