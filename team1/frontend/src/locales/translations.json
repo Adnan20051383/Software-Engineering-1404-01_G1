@@ -45,7 +45,21 @@
     "total_games": "کل بازی‌ها",
     "quiz_categories": "دسته‌بندی کوییزها",
     "avg_score_short": "میانگین",
-    "count_short": "تعداد"
+    "count_short": "تعداد",
+    "quiz_started": "کوییز شروع شد",
+    "quiz_finished": "کوییز تمام شد",
+    "quiz_failed_load_question": "خطا در دریافت سوال",
+    "error_generic": "خطا",
+    "correct_label": "درست",
+    "leave": "خروج",
+    "exit_quiz_confirm": "خارج می‌شوید؟",
+    "quiz_result_title": "نتیجه کوییز",
+    "correct_answers": "پاسخ صحیح",
+    "back": "بازگشت",
+    "dashboard_load_error": "خطا در بارگذاری داشبورد",
+    "leitner_breakdown_title": "جزئیات جعبه لایتنر",
+    "points_short": "امتیاز",
+    "flashcardImage": "تصویر فلش کارت"
   },
   "en": {
     "dashboard": "Dashboard",
@@ -93,6 +107,20 @@
     "total_games": "Total Games Played",
     "quiz_categories": "Quiz Categories",
     "avg_score_short": "Avg",
-    "count_short": "Count"
+    "count_short": "Count",
+    "quiz_started": "Quiz started",
+    "quiz_finished": "Quiz finished",
+    "quiz_failed_load_question": "Failed to load question",
+    "error_generic": "Error",
+    "correct_label": "Correct",
+    "leave": "Leave",
+    "exit_quiz_confirm": "Exit Quiz?",
+    "quiz_result_title": "Quiz Result",
+    "correct_answers": "Correct Answers",
+    "back": "Back",
+    "dashboard_load_error": "Error loading dashboard",
+    "leitner_breakdown_title": "Leitner Breakdown",
+    "points_short": "pts",
+    "flashcardImage": "Flashcard Image"
   }
 }

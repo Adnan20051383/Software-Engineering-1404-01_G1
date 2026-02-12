@@ -1,10 +1,10 @@
+/* --- Navbar Styles --- */
 .navbar {
   background-color: var(--nav-bg);
   height: 75px;
   display: flex;
   align-items: center;
   justify-content: center;
-  /* Thin, elegant shadow from Figma */
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
   position: sticky;
   top: 0;
@@ -28,7 +28,7 @@
   text-decoration: none;
   color: #7f8c8d;
   padding: 10px 22px;
-  border-radius: 50px; /* Perfect pill shape */
+  border-radius: 50px;
   font-weight: 500;
   font-size: 0.95rem;
   display: flex;
@@ -36,7 +36,6 @@
   gap: 8px;
 }
 
-/* Specific Figma Colors */
 .active-leitner {
   background-color: #ff8c6b; /* Soft Orange */
   color: white !important;
@@ -72,17 +71,56 @@
   color: #4a5568;
 }
 
-/* Ensure Farsi text in buttons looks good */
-[dir='rtl'] .nav-item {
-  font-size: 1rem;
+/* --- Responsive Navbar: Hamburger Menu --- */
+.hamburger-menu {
+  display: none;
+  cursor: pointer;
+  flex-direction: column;
+  gap: 4px;
 }
 
-.nav-auth-section {
-  display: flex;
-  align-items: center;
-  min-width: 200px;
+.hamburger-menu div {
+  width: 30px;
+  height: 4px;
+  background-color: #7f8c8d;
+  border-radius: 5px;
 }
 
+/* --- Mobile View --- */
+@media (max-width: 768px) {
+  .nav-links {
+    display: none;
+    flex-direction: column;
+    gap: 15px;
+    position: absolute;
+    top: 75px; /* Below navbar */
+    left: 0;
+    right: 0;
+    background-color: var(--nav-bg);
+    padding: 20px;
+    z-index: 1001;
+  }
+
+  .nav-links.active {
+    display: flex;
+  }
+
+  .nav-container {
+    justify-content: space-between;
+  }
+
+  /* Show the hamburger menu on mobile */
+  .hamburger-menu {
+    display: flex;
+  }
+
+  .nav-controls {
+    display: flex;
+    gap: 12px;
+    flex-direction: column;
+    margin-top: 20px; /* Space out controls on mobile */
+  }
+}
 /* باکس پروفایل کاربر */
 .user-profile-box {
   display: flex;
@@ -123,7 +161,6 @@
   font-size: 0.7rem;
   color: #7f8c8d;
 }
-
 /* دکمه‌های ورود و ثبت‌نام */
 .auth-buttons {
   display: flex;

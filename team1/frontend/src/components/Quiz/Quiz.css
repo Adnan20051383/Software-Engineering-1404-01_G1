@@ -1,42 +1,61 @@
-/* --- CSS Variables for Theme Support --- */
+/* --- 1) CSS Variables for Theme Support --- */
 :root {
   --quiz-bg: #f7fafc;
-  --card-bg: #ffffff;
-  --text-primary: #2d3748;
-  --text-secondary: #718096;
-  --border-color: #e2e8f0;
-  --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
-  
+  --quiz-card: #ffffff;
+  --quiz-text: #2d3748;
+  --quiz-text-muted: #718096;
+  --quiz-border: #e2e8f0;
+  --quiz-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+
   /* Quiz Types & States */
-  --color-daily: #3182ce;
-  --color-weekly: #805ad5;
-  --color-monthly: #38a169;
-  --color-wrong: #e53e3e;
-  --color-correct: #48bb78;
+  --quiz-daily: #3182ce;
+  --quiz-weekly: #805ad5;
+  --quiz-monthly: #38a169;
+
+  --quiz-wrong: #e53e3e;
+  --quiz-correct: #48bb78;
+
+  /* UI colors */
+  --quiz-danger-bg: #fff5f5;
+  --quiz-danger-text: #c53030;
+  --quiz-danger-border: #feb2b2;
+
+  --quiz-hover-bg: rgba(49, 130, 206, 0.05);
+  --quiz-option-correct-hint-bg: rgba(72, 187, 120, 0.08);
 }
 
-/* --- Dark Theme Overrides --- */
-.dark-theme {
+/* Dark Theme Overrides (support both patterns like Leitner) */
+.dark-theme,
+[data-theme='dark'] {
   --quiz-bg: #1a202c;
-  --card-bg: #2d3748;
-  --text-primary: #f7fafc;
-  --text-secondary: #a0aec0;
-  --border-color: #4a5568;
-  --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+  --quiz-card: #2d3748;
+  --quiz-text: #f7fafc;
+  --quiz-text-muted: #a0aec0;
+  --quiz-border: #4a5568;
+  --quiz-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.35);
+
+  --quiz-danger-bg: rgba(229, 62, 62, 0.12);
+  --quiz-danger-text: #feb2b2;
+  --quiz-danger-border: rgba(254, 178, 178, 0.45);
+
+  --quiz-hover-bg: rgba(99, 179, 237, 0.10);
+  --quiz-option-correct-hint-bg: rgba(72, 187, 120, 0.12);
 }
 
-/* --- Main Wrapper --- */
+/* --- 2) Main Wrapper --- */
 .quiz-wrapper {
   max-width: 900px;
   margin: 0 auto;
   padding: 40px 20px;
   min-height: 85vh;
   font-family: 'Inter', 'Vazir', sans-serif;
-  color: var(--text-primary);
-  transition: all 0.3s ease;
+
+  background: var(--quiz-bg);
+  color: var(--quiz-text);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* --- Top Stats & Progress --- */
+/* --- 3) Top Stats & Progress --- */
 .stats-top-bar {
   display: flex;
   justify-content: space-between;
@@ -46,11 +65,11 @@
 }
 
 .stat-pill.correct {
-  background: rgba(72, 187, 120, 0.1);
-  color: var(--color-correct);
+  background: rgba(72, 187, 120, 0.10);
+  color: var(--quiz-correct);
   padding: 6px 16px;
   border-radius: 20px;
-  border: 1px solid var(--color-correct);
+  border: 1px solid var(--quiz-correct);
   display: flex;
   gap: 8px;
   font-size: 0.95rem;
@@ -59,14 +78,14 @@
 
 .progress-mini-text {
   font-weight: 800;
-  color: var(--text-secondary);
+  color: var(--quiz-text-muted);
   font-variant-numeric: tabular-nums;
 }
 
 .progress-container {
   width: 100%;
   height: 10px;
-  background: var(--border-color);
+  background: var(--quiz-border);
   border-radius: 10px;
   margin-bottom: 25px;
   overflow: hidden;
@@ -74,11 +93,11 @@
 
 .progress-bar {
   height: 100%;
-  background: linear-gradient(90deg, var(--color-daily), var(--color-weekly));
+  background: linear-gradient(90deg, var(--quiz-daily), var(--quiz-weekly));
   transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* --- Phase 1: Selection View --- */
+/* --- 4) Phase 1: Selection View --- */
 .quiz-header-main {
   text-align: center;
   margin-bottom: 50px;
@@ -97,8 +116,8 @@
 }
 
 .mode-card {
-  background: var(--card-bg);
-  border: 2px solid var(--border-color);
+  background: var(--quiz-card);
+  border: 2px solid var(--quiz-border);
   border-radius: 24px;
   padding: 40px 20px;
   cursor: pointer;
@@ -106,13 +125,13 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  box-shadow: var(--shadow);
-  color: var(--text-primary);
+  box-shadow: var(--quiz-shadow);
+  color: var(--quiz-text);
 }
 
 .mode-card:hover:not(:disabled) {
   transform: translateY(-8px);
-  border-color: var(--color-daily);
+  border-color: var(--quiz-daily);
   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15);
 }
 
@@ -130,16 +149,17 @@
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
 }
 
-/* --- Phase 2: Active Quiz UI --- */
+/* --- 5) Phase 2: Active Quiz UI --- */
 .quiz-top-nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 30px;
-  background: var(--card-bg);
+  background: var(--quiz-card);
   padding: 12px 25px;
   border-radius: 50px;
-  box-shadow: var(--shadow);
+  box-shadow: var(--quiz-shadow);
+  border: 1px solid var(--quiz-border);
 }
 
 .quiz-timer-box {
@@ -156,9 +176,9 @@
 }
 
 .quiz-exit-btn {
-  background: #fff5f5;
-  color: #c53030;
-  border: 1px solid #feb2b2;
+  background: var(--quiz-danger-bg);
+  color: var(--quiz-danger-text);
+  border: 1px solid var(--quiz-danger-border);
   padding: 10px 22px;
   border-radius: 14px;
   font-weight: 700;
@@ -167,21 +187,22 @@
 }
 
 .quiz-exit-btn:hover {
-  background: #feb2b2;
+  filter: brightness(0.98);
+  transform: translateY(-1px);
 }
 
 .question-card-main {
-  background: var(--card-bg);
+  background: var(--quiz-card);
   padding: 60px 40px;
   border-radius: 32px;
   text-align: center;
-  box-shadow: var(--shadow);
-  border: 1px solid var(--border-color);
+  box-shadow: var(--quiz-shadow);
+  border: 1px solid var(--quiz-border);
 }
 
 .display-word {
   font-size: 3.8rem;
-  color: var(--color-daily);
+  color: var(--quiz-daily);
   margin-bottom: 45px;
   letter-spacing: -1px;
   font-weight: 800;
@@ -196,54 +217,55 @@
 .option-btn {
   padding: 22px;
   border-radius: 18px;
-  border: 2px solid var(--border-color);
-  background: var(--card-bg);
+  border: 2px solid var(--quiz-border);
+  background: var(--quiz-card);
   font-size: 1.25rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
-  color: var(--text-primary);
+  color: var(--quiz-text);
 }
 
 .option-btn:hover:not(:disabled) {
-  border-color: var(--color-daily);
-  background: rgba(49, 130, 206, 0.05);
+  border-color: var(--quiz-daily);
+  background: var(--quiz-hover-bg);
 }
 
 /* Feedback States */
 .option-btn.correct {
-  background: var(--color-correct) !important;
+  background: var(--quiz-correct) !important;
   color: white !important;
-  border-color: var(--color-correct) !important;
+  border-color: var(--quiz-correct) !important;
   transform: scale(1.02);
 }
 
 .option-btn.wrong {
-  background: var(--color-wrong) !important;
+  background: var(--quiz-wrong) !important;
   color: white !important;
-  border-color: var(--color-wrong) !important;
+  border-color: var(--quiz-wrong) !important;
   animation: shake 0.4s;
 }
 
 .option-btn.correct-hint {
-  border: 3px dashed var(--color-correct) !important;
-  color: var(--color-correct);
-  background: rgba(72, 187, 120, 0.08);
+  border: 3px dashed var(--quiz-correct) !important;
+  color: var(--quiz-correct);
+  background: var(--quiz-option-correct-hint-bg);
 }
 
-/* --- Phase 3: Results Card --- */
+/* --- 6) Phase 3: Results Card --- */
 .quiz-result-card {
-  background: var(--card-bg);
+  background: var(--quiz-card);
   padding: 80px 40px;
   border-radius: 40px;
   text-align: center;
-  box-shadow: var(--shadow);
+  box-shadow: var(--quiz-shadow);
+  border: 1px solid var(--quiz-border);
 }
 
 .result-check {
   width: 100px;
   height: 100px;
-  background: var(--color-correct);
+  background: var(--quiz-correct);
   color: white;
   border-radius: 50%;
   display: flex;
@@ -256,20 +278,20 @@
 .final-score-box label {
   text-transform: uppercase;
   letter-spacing: 2px;
-  color: var(--text-secondary);
+  color: var(--quiz-text-muted);
   font-weight: 800;
 }
 
 .final-score-box strong {
   display: block;
   font-size: 6rem;
-  color: var(--color-correct);
+  color: var(--quiz-correct);
   line-height: 1.1;
   text-shadow: 0 4px 12px rgba(72, 187, 120, 0.2);
 }
 
 .final-score-box p {
-  color: var(--text-secondary);
+  color: var(--quiz-text-muted);
   margin-top: 15px;
   font-size: 1.2rem;
   font-weight: 600;
@@ -278,7 +300,7 @@
 .quiz-restart-btn {
   margin-top: 40px;
   padding: 18px 50px;
-  background: var(--color-daily);
+  background: var(--quiz-daily);
   color: white;
   border: none;
   border-radius: 18px;
